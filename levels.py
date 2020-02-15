@@ -80,6 +80,11 @@ class Level_00(Level):
         self.level_limit = -10
 
 
+        SchiffImg = pygame.image.load('Schiff1.png')
+        if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
+            SchiffImg = pygame.image.load('Schiff2.png')
+
+
 
 
 # Create platforms for the level

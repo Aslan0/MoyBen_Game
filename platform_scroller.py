@@ -65,7 +65,7 @@ def main():
 
     #Loop until the user clicks the close button.
     done = False
-
+    meowcounter = 0
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
@@ -86,7 +86,9 @@ def main():
                     player.jump()
                 if event.key == pygame.K_SPACE:
                     #  MEOW
-                    JumpSound = pygame.mixer.Sound('meow1.ogg')
+                    meowcounter += 1
+                    meowcounter = meowcounter % 2
+                    JumpSound = pygame.mixer.Sound('meow0'+str(meowcounter)+'.ogg')
                     JumpSound.play()
 
 
