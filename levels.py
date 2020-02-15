@@ -2,6 +2,7 @@ import pygame
 
 import constants
 import platforms
+import collectibles
 
 class Level():
     """ This is a generic super-class used to define a level.
@@ -12,6 +13,9 @@ class Level():
     # lists as needed for your game. """
     platform_list = None
     enemy_list = None
+    collectible_list = None
+
+    musicfile = "silence.ogg"
 
     # Background image
     background = None
@@ -24,14 +28,15 @@ class Level():
         """ Constructor. Pass in a handle to player. Needed for when moving platforms
             collide with the player. """
         self.platform_list = pygame.sprite.Group()
+        self.collectible_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
         self.player = player
-        self.musicfile = ""
 
     # Update everythign on this level
     def update(self):
         """ Update everything in this level."""
         self.platform_list.update()
+        self.collectible_list.update()
         self.enemy_list.update()
 
     def draw(self, screen):
@@ -45,6 +50,7 @@ class Level():
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
+        self.collectible_list.draw(screen)
         self.enemy_list.draw(screen)
 
     def play_background_music(self):
@@ -65,6 +71,9 @@ class Level():
         for enemy in self.enemy_list:
             enemy.rect.x += shift_x
 
+        for collectible in self.collectible_list:
+            collectible.rect.x += shift_x
+
 class Level_00(Level):
     """ Definition for Main Screen """
 
@@ -80,9 +89,9 @@ class Level_00(Level):
         self.level_limit = -10
 
 
-        SchiffImg = pygame.image.load('Schiff1.png')
-        if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
-            SchiffImg = pygame.image.load('Schiff2.png')
+        #SchiffImg = pygame.image.load('Schiff1.png')
+        #if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
+         #   SchiffImg = pygame.image.load('Schiff2.png')
 
 
 
@@ -104,7 +113,7 @@ class Level_01(Level):
 
 
         # Array with type of platform, and x, y location of the platform.
-        level = [ [platforms.GRASS_LEFT, 500, 500],
+        level_platforms = [ [platforms.GRASS_LEFT, 500, 500],
                   [platforms.GRASS_MIDDLE, 570, 500],
                   [platforms.GRASS_RIGHT, 640, 500],
                   [platforms.GRASS_LEFT, 800, 400],
@@ -118,25 +127,35 @@ class Level_01(Level):
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
                   ]
 
+        level_collectibles = [ [collectibles.SUSHI, 100, 100], ]
+
 
         # Go through the array above and add platforms
-        for platform in level:
+        for platform in level_platforms:
             block = platforms.Platform(platform[0])
             block.rect.x = platform[1]
             block.rect.y = platform[2]
             block.player = self.player
             self.platform_list.add(block)
 
-        # Add a custom moving platform
-        block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
-        block.rect.x = 1350
-        block.rect.y = 280
-        block.boundary_left = 1350
-        block.boundary_right = 1600
-        block.change_x = 1
+        for collectible in level_collectibles:
+            block = collectibles.Collectible(collectible[0])
+            block.rect.x = collectible[1]
+            block.rect.y = collectible[2]
+            block.player = self.player
+            self.collectible_list.add(block)
+
+
+        # Add a custom moving collectible
+        block = collectibles.MovingCollectible(collectibles.SUSHI)
+        block.rect.x = 200
+        block.rect.y = 200
+        block.boundary_top = 220
+        block.boundary_bottom = 200
+        block.change_y = 1
         block.player = self.player
         block.level = self
-        self.platform_list.add(block)
+        self.collectible_list.add(block)
 
 
 # Create platforms for the level

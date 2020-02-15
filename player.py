@@ -128,6 +128,15 @@ class Player(pygame.sprite.Sprite):
             if isinstance(block, MovingPlatform):
                 self.rect.x += block.change_x
 
+        collectible_hit_list = pygame.sprite.spritecollide(self, self.level.collectible_list, False)
+        for collect in collectible_hit_list:
+            # let the collectible disappear
+            collect.rect.top = 5000
+            MeowSound = pygame.mixer.Sound('nom.ogg')
+            MeowSound.play()
+
+
+
     def calc_grav(self):
         """ Calculate effect of gravity. """
         if self.change_y == 0:
