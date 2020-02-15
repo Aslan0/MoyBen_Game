@@ -3,6 +3,7 @@ import pygame
 import constants
 import platforms
 import collectibles
+import random
 
 class Level():
     """ This is a generic super-class used to define a level.
@@ -32,7 +33,7 @@ class Level():
         self.enemy_list = pygame.sprite.Group()
         self.player = player
 
-    # Update everythign on this level
+    # Update everything on this level
     def update(self):
         """ Update everything in this level."""
         self.platform_list.update()
@@ -46,7 +47,7 @@ class Level():
         # We don't shift the background as much as the sprites are shifted
         # to give a feeling of depth.
         screen.fill(constants.BLUE)
-        screen.blit(self.background,(self.world_shift // 3,0))
+        screen.blit(self.background, (self.world_shift // 3, 0))
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
@@ -83,10 +84,14 @@ class Level_00(Level):
         # Call the parent constructor
         Level.__init__(self, player)
 
-        self.musicfile = 'Great Fairys Fountain - The Legend of Zelda - Twilight Princess-7SpBIV_HYbk.ogg'
-        self.background = pygame.image.load("background_00.png").convert()
-        self.background.set_colorkey(constants.WHITE)
-        self.level_limit = -10
+        self.musicfile = 'I Can Go The Distance - Hercules Lyrics-2aqpF-MwyUs.ogg'
+        self.background = pygame.image.load("background_00a.png").convert()
+        self.background.set_colorkey(constants.BLUE)
+
+        self.background2 = pygame.image.load("background_00b.png").convert()
+        self.background2.set_colorkey(constants.BLUE)
+
+        self.level_limit = -3000
 
 
         #SchiffImg = pygame.image.load('Schiff1.png')
@@ -105,7 +110,7 @@ class Level_01(Level):
 
         # Call the parent constructor
         Level.__init__(self, player)
-        self.musicfile = "Mein Kleiner Gruner Kaktus - Comedian Harmonists-HyqzJTNcygE.ogg"
+        self.musicfile = "Billie Eilish - Bad Guy (Cover by UMC)_-EjMtDFRl-Ws.ogg"
         self.background = pygame.image.load("background_01.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -2500
@@ -127,8 +132,15 @@ class Level_01(Level):
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
                   ]
 
-        level_collectibles = [ [collectibles.SUSHI, 100, 100], ]
+        level_collectibles = [ [collectibles.SUSHI, 300, 300],
+                               [collectibles.SUSHI, 400, 300],
+                               [collectibles.SUSHI, 500, 300],
+                               [collectibles.SUSHI, 600, 300],
+                               [collectibles.SUSHI, 700, 300],
+                               ]
 
+        for i in range(100):
+            level_collectibles.append([collectibles.SUSHI, random.randint(200, -self.level_limit ), random.randint(0, 400)])
 
         # Go through the array above and add platforms
         for platform in level_platforms:
@@ -145,11 +157,21 @@ class Level_01(Level):
             block.player = self.player
             self.collectible_list.add(block)
 
+        # Add a custom moving platform
+        block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
+        block.rect.x = 1400
+        block.rect.y = 280
+        block.boundary_left = 1400
+        block.boundary_right = 1600
+        block.change_x = -1
+        block.player = self.player
+        block.level = self
+        self.platform_list.add(block)
 
         # Add a custom moving collectible
         block = collectibles.MovingCollectible(collectibles.SUSHI)
-        block.rect.x = 200
-        block.rect.y = 200
+        block.rect.x = 500
+        block.rect.y = 300
         block.boundary_top = 220
         block.boundary_bottom = 200
         block.change_y = 1
