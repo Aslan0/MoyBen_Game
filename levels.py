@@ -4,6 +4,7 @@ import constants
 import platforms
 import collectibles
 import random
+import time
 
 class Level():
     """ This is a generic super-class used to define a level.
@@ -47,7 +48,20 @@ class Level():
         # We don't shift the background as much as the sprites are shifted
         # to give a feeling of depth.
         screen.fill(constants.BLUE)
-        screen.blit(self.background, (self.world_shift // 3, 0))
+
+        # allows to load two backgrounds, making the heads in the main menu wobble
+        try:
+            if ( (time.time() % 1) > 0.5 ):
+                self.background_final = self.background2
+            else:
+                self.background_final = self.background
+        except:
+            pass
+
+        # in case you want to switch resolutions to anything that isnt 800x600 - this is the first of many codechanges necessary
+        #if not constants.Devmode:
+        #    self.background_final = pygame.transform.scale(self.background_final, (constants.SCREEN_WIDTH_new, constants.SCREEN_HEIGHT_new))
+        screen.blit(self.background_final, (self.world_shift // 3, 0))
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
@@ -132,6 +146,7 @@ class Level_01(Level):
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
                   ]
 
+        # manual placements for collectibles
         level_collectibles = [ [collectibles.SUSHI, 300, 300],
                                [collectibles.SUSHI, 400, 300],
                                [collectibles.SUSHI, 500, 300],
@@ -139,8 +154,9 @@ class Level_01(Level):
                                [collectibles.SUSHI, 700, 300],
                                ]
 
-        for i in range(100):
-            level_collectibles.append([collectibles.SUSHI, random.randint(200, -self.level_limit ), random.randint(0, 400)])
+        # random mass placement for collectibles
+        for i in range(10):
+            level_collectibles.append([collectibles.SUSHI, random.randint(200, -self.level_limit), random.randint(0, 400)])
 
         # Go through the array above and add platforms
         for platform in level_platforms:
@@ -169,15 +185,15 @@ class Level_01(Level):
         self.platform_list.add(block)
 
         # Add a custom moving collectible
-        block = collectibles.MovingCollectible(collectibles.SUSHI)
-        block.rect.x = 500
-        block.rect.y = 300
-        block.boundary_top = 220
-        block.boundary_bottom = 200
-        block.change_y = 1
-        block.player = self.player
-        block.level = self
-        self.collectible_list.add(block)
+        #block = collectibles.MovingCollectible(collectibles.SUSHI)
+        #block.rect.x = 500
+        #block.rect.y = 300
+        #block.boundary_top = 220
+        #block.boundary_bottom = 200
+        #block.change_y = 1
+        #block.player = self.player
+        #block.level = self
+        #self.collectible_list.add(block)
 
 
 # Create platforms for the level
