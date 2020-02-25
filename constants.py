@@ -16,5 +16,5 @@ SCREEN_HEIGHT = 600
 #width = gtk.gdk.screen_width()
 #height = gtk.gdk.screen_height()
 
-# SCREEN_WIDTH  = width
-# SCREEN_HEIGHT = height
+#SCREEN_WIDTH  = width
+#SCREEN_HEIGHT = height

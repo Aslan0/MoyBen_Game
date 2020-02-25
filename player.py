@@ -88,6 +88,7 @@ class Player(pygame.sprite.Sprite):
         # Gravity
         self.calc_grav()
 
+        # p rint("player" + str(self.rect))
         # Move left/right
         self.rect.x += self.change_x
         pos = self.rect.x + self.level.world_shift
@@ -108,6 +109,9 @@ class Player(pygame.sprite.Sprite):
             elif self.change_x < 0:
                 # Otherwise if we are moving left, do the opposite.
                 self.rect.left = block.rect.right
+
+
+
 
         # Move up/down
         self.rect.y += self.change_y
@@ -135,10 +139,11 @@ class Player(pygame.sprite.Sprite):
         else:
             self.change_y += .35
 
+
         # See if we are on the ground.
-        if self.rect.y >= constants.SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
+        if self.rect.y - self.level.world_shift_y >= self.level.level_limit_y + self.rect.height and self.change_y > 0:
             self.change_y = 0
-            self.rect.y = constants.SCREEN_HEIGHT - self.rect.height
+            self.rect.y = self.level.level_limit_y + self.rect.height + self.level.world_shift_y
 
     def jump(self):
         """ Called when user hits 'jump' button. """
@@ -146,23 +151,23 @@ class Player(pygame.sprite.Sprite):
         # move down a bit and see if there is a platform below us.
         # Move down 2 pixels because it doesn't work well if we only move down 1
         # when working with a platform moving down.
-        self.rect.y += 2
+        self.rect.y += 5
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2
+        self.rect.y -= 5
 
         # If it is ok to jump, set our speed upwards
-        if len(platform_hit_list) > 0 or self.rect.bottom >= constants.SCREEN_HEIGHT:
+        if len(platform_hit_list) > 0 or self.rect.y - self.level.world_shift_y >= self.level.level_limit_y + self.rect.height:
             self.change_y = -10
 
     # Player-controlled movement:
     def go_left(self):
         """ Called when the user hits the left arrow. """
-        self.change_x = -6
+        self.change_x = -30
         self.direction = "L"
 
     def go_right(self):
         """ Called when the user hits the right arrow. """
-        self.change_x = 6
+        self.change_x = 30
         self.direction = "R"
 
     def stop(self):

@@ -2,6 +2,16 @@ import pygame
 
 import constants
 import platforms
+import characters
+import speechbubbles
+
+def add_platforms_to_list_repeated_horizontally(list_to_add_to, sprite_sheet_data_quadruple, pos_x_start, pos_y_start,
+                                                times, additional_offset_x=0, additional_offset_y=0):
+    offset_x = sprite_sheet_data_quadruple[2] + additional_offset_x
+    offset_y = additional_offset_y
+
+    for i in range(0, times):
+        list_to_add_to.append([sprite_sheet_data_quadruple, pos_x_start + i * offset_x, pos_y_start + i * offset_y])
 
 class Level():
     """ This is a generic super-class used to define a level.
@@ -18,13 +28,19 @@ class Level():
 
     # How far this world has been scrolled left/right
     world_shift = 0
+    world_shift_y = 0
     level_limit = -1000
+
+    level_limit_y = 420
 
     def __init__(self, player):
         """ Constructor. Pass in a handle to player. Needed for when moving platforms
             collide with the player. """
         self.platform_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
+        self.character_list = pygame.sprite.Group()
+        self.speechbubble_list = pygame.sprite.Group()
+
         self.player = player
         self.musicfile = ""
 
@@ -33,6 +49,8 @@ class Level():
         """ Update everything in this level."""
         self.platform_list.update()
         self.enemy_list.update()
+        self.character_list.update()
+        self.speechbubble_list.update()
 
     def draw(self, screen):
         """ Draw everything on this level. """
@@ -41,18 +59,21 @@ class Level():
         # We don't shift the background as much as the sprites are shifted
         # to give a feeling of depth.
         screen.fill(constants.BLUE)
-        screen.blit(self.background,(self.world_shift // 3,0))
+        screen.blit(self.background,(self.world_shift // 3,self.world_shift_y))
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
         self.enemy_list.draw(screen)
+        self.character_list.draw(screen)
+        self.speechbubble_list.draw(screen)
 
     def play_background_music(self):
-        pygame.mixer.music.stop()
-        pygame.mixer.music.load(self.musicfile)
-        pygame.mixer.music.play(-1, 0)
+        if (self.musicfile):
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(self.musicfile)
+            pygame.mixer.music.play(-1, 0)
 
-    def shift_world(self, shift_x):
+    def shift_world_x(self, shift_x):
         """ When the user moves left/right and we need to scroll everything: """
 
         # Keep track of the shift amount
@@ -64,6 +85,37 @@ class Level():
 
         for enemy in self.enemy_list:
             enemy.rect.x += shift_x
+
+        for character in self.character_list:
+            character.rect.x += shift_x
+
+        for speechbubble in self.speechbubble_list:
+            speechbubble.rect.x += shift_x
+
+    def shift_world_y(self, shift_y):
+
+
+        shift_highest_allowed = self.level_limit_y - self.world_shift_y
+
+        shift = min(shift_highest_allowed, shift_y)
+        # Keep track of the shift amount
+        self.world_shift_y += shift
+
+        # Go through all the sprite lists and shift
+        for platform in self.platform_list:
+            platform.rect.y += shift
+
+        for enemy in self.enemy_list:
+            enemy.rect.y += shift
+
+
+        for character in self.character_list:
+            character.rect.y += shift
+
+        for speechbubble in self.speechbubble_list:
+            speechbubble.rect.y += shift
+
+        return shift
 
 class Level_00(Level):
     """ Definition for Main Screen """
@@ -80,9 +132,9 @@ class Level_00(Level):
         self.level_limit = -10
 
 
-        SchiffImg = pygame.image.load('Schiff1.png')
-        if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
-            SchiffImg = pygame.image.load('Schiff2.png')
+        # SchiffImg = pygame.image.load('Schiff1.png')
+        # if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
+        #    SchiffImg = pygame.image.load('Schiff2.png')
 
 
 
@@ -100,7 +152,6 @@ class Level_01(Level):
         self.background = pygame.image.load("background_01.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -2500
-
 
 
         # Array with type of platform, and x, y location of the platform.
@@ -151,7 +202,7 @@ class Level_02(Level):
 
         self.background = pygame.image.load("background_02.png").convert()
         self.background.set_colorkey(constants.WHITE)
-        self.level_limit = -1000
+        self.level_limit = -5000
 
         # Array with type of platform, and x, y location of the platform.
         level = [ [platforms.STONE_PLATFORM_LEFT, 500, 550],
@@ -187,3 +238,58 @@ class Level_02(Level):
         block.player = self.player
         block.level = self
         self.platform_list.add(block)
+
+
+class Level_03(Level):
+    """ Definition for level 3, aka the excel level"""
+
+    def __init__(self, player):
+        """ Create level 3. """
+
+        # Call the parent constructor
+        Level.__init__(self, player)
+
+        self.background = pygame.image.load("background_03.png").convert()
+        self.background.set_colorkey(constants.WHITE)
+        self.level_limit = -12000 # 10k - 12k
+        self.level_limit_y = 2100
+        self.world_shift_y = -1500
+
+        # Array with type of platform, and x, y location of the platform.
+        level = [ [platforms.STONE_PLATFORM_LEFT_SMALL, 0, self.level_limit_y + self.world_shift_y + 50],
+                  [platforms.STONE_PLATFORM_LEFT_SMALL, 11000, self.level_limit_y + self.world_shift_y + 60],
+                  ]
+        add_platforms_to_list_repeated_horizontally(level, platforms.STONE_PLATFORM_MIDDLE_SMALL, -1000,
+                                                    self.level_limit_y + self.world_shift_y + 50,
+                                                    200)
+
+        # Go through the array above and add platforms
+        for platform in level:
+            block = platforms.Platform(platform[0])
+            block.rect.x = platform[1]
+            block.rect.y = platform[2]
+            block.player = self.player
+            self.platform_list.add(block)
+
+
+        # Add a lissi
+        lissi = characters.TaklingCharacter(characters.LISSI, ["das ist\n doch \nalbern", "Good Luck!\nHave Fun! :)"])
+        lissi.rect.x = 300
+        lissi.rect.y = self.level_limit_y + self.world_shift_y + 55 - lissi.rect.height
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        lissi.player = self.player
+        lissi.level = self
+        self.character_list.add(lissi)
+
+        # Add a custom moving platform
+        # block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
+        # block.rect.x = 1500
+        # block.rect.y = 300
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        # block.player = self.player
+        # block.level = self
+        # self.platform_list.add(block)

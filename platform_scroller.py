@@ -49,10 +49,10 @@ def main():
     level_list.append(levels.Level_00(player))
     level_list.append(levels.Level_01(player))
     level_list.append(levels.Level_02(player))
-
+    level_list.append(levels.Level_03(player))
 
     # Set the current level
-    current_level_no = 0
+    current_level_no = 3 # revert, testing only
     current_level = level_list[current_level_no]
     current_level.play_background_music()
 
@@ -108,13 +108,24 @@ def main():
         if player.rect.x >= 500:
             diff = player.rect.x - 500
             player.rect.x = 500
-            current_level.shift_world(-diff)
+            current_level.shift_world_x(-diff)
 
         # If the player gets near the left side, shift the world right (+x)
         if player.rect.x <= 120:
             diff = 120 - player.rect.x
             player.rect.x = 120
-            current_level.shift_world(diff)
+            current_level.shift_world_x(diff)
+
+        # Move camera down, if not on the floor yet
+        if player.rect.y > 500 and player.rect.y - current_level.world_shift_y < current_level.level_limit_y + player.rect.height:
+            diff = player.rect.y - 500
+            player.rect.y = 500
+            current_level.shift_world_y(-diff)
+
+        if player.rect.y <= 120:
+            diff = 120 - player.rect.x
+            player.rect.y = 120
+            current_level.shift_world_y(diff)
 
         # If the player gets to the end of the level, go to the next level
         current_position = player.rect.x + current_level.world_shift
