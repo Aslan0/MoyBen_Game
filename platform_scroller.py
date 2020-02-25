@@ -88,8 +88,8 @@ def main():
                     #  MEOW
                     meowcounter += 1
                     meowcounter = meowcounter % 2
-                    JumpSound = pygame.mixer.Sound('meow0'+str(meowcounter)+'.ogg')
-                    JumpSound.play()
+                    MeowSound = pygame.mixer.Sound('meow0'+str(meowcounter)+'.ogg')
+                    MeowSound.play()
 
 
             if event.type == pygame.KEYUP:

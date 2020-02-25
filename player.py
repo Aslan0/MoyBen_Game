@@ -84,14 +84,25 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        """ Move the player. """
+        """ Move the player.
+            handle collectible collection
+        """
         # Gravity
         self.calc_grav()
 
         # p rint("player" + str(self.rect))
         # Move left/right
         self.rect.x += self.change_x
+
+        print(self.level.world_shift)
+        # dont allow the player to walk left
+        if self.level.world_shift > 0:
+            self.level.world_shift = -10
+
+
         pos = self.rect.x + self.level.world_shift
+
+        # changes sprite animation direction
         if self.direction == "R":
             frame = (pos // 30) % len(self.walking_frames_r)
             self.image = self.walking_frames_r[frame]
@@ -131,6 +142,15 @@ class Player(pygame.sprite.Sprite):
 
             if isinstance(block, MovingPlatform):
                 self.rect.x += block.change_x
+
+        collectible_hit_list = pygame.sprite.spritecollide(self, self.level.collectible_list, False)
+        for collect in collectible_hit_list:
+            # let the collectible disappear
+            collect.rect.top = 5000
+            MeowSound = pygame.mixer.Sound('nom.ogg')
+            MeowSound.play()
+
+
 
     def calc_grav(self):
         """ Calculate effect of gravity. """

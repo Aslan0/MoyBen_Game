@@ -4,6 +4,9 @@ import constants
 import platforms
 import characters
 import speechbubbles
+import collectibles
+import random
+import time
 
 def add_platforms_to_list_repeated_horizontally(list_to_add_to, sprite_sheet_data_quadruple, pos_x_start, pos_y_start,
                                                 times, additional_offset_x=0, additional_offset_y=0):
@@ -22,6 +25,9 @@ class Level():
     # lists as needed for your game. """
     platform_list = None
     enemy_list = None
+    collectible_list = None
+
+    musicfile = "silence.ogg"
 
     # Background image
     background = None
@@ -37,17 +43,18 @@ class Level():
         """ Constructor. Pass in a handle to player. Needed for when moving platforms
             collide with the player. """
         self.platform_list = pygame.sprite.Group()
+        self.collectible_list = pygame.sprite.Group()
         self.enemy_list = pygame.sprite.Group()
         self.character_list = pygame.sprite.Group()
         self.speechbubble_list = pygame.sprite.Group()
 
         self.player = player
-        self.musicfile = ""
 
-    # Update everythign on this level
+    # Update everything on this level
     def update(self):
         """ Update everything in this level."""
         self.platform_list.update()
+        self.collectible_list.update()
         self.enemy_list.update()
         self.character_list.update()
         self.speechbubble_list.update()
@@ -59,10 +66,24 @@ class Level():
         # We don't shift the background as much as the sprites are shifted
         # to give a feeling of depth.
         screen.fill(constants.BLUE)
-        screen.blit(self.background,(self.world_shift // 3,self.world_shift_y))
+
+        # allows to load two backgrounds, making the heads in the main menu wobble
+        try:
+            if ( (time.time() % 1) > 0.5 ):
+                self.background_final = self.background2
+            else:
+                self.background_final = self.background
+        except:
+            pass
+
+        # in case you want to switch resolutions to anything that isnt 800x600 - this is the first of many codechanges necessary
+        #if not constants.Devmode:
+        #    self.background_final = pygame.transform.scale(self.background_final, (constants.SCREEN_WIDTH_new, constants.SCREEN_HEIGHT_new))
+        screen.blit(self.background_final, (self.world_shift // 3, self.world_shift_y))
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
+        self.collectible_list.draw(screen)
         self.enemy_list.draw(screen)
         self.character_list.draw(screen)
         self.speechbubble_list.draw(screen)
@@ -92,6 +113,9 @@ class Level():
         for speechbubble in self.speechbubble_list:
             speechbubble.rect.x += shift_x
 
+        for collectible in self.collectible_list:
+            collectible.rect.x += shift_x
+
     def shift_world_y(self, shift_y):
 
 
@@ -114,6 +138,9 @@ class Level():
 
         for speechbubble in self.speechbubble_list:
             speechbubble.rect.y += shift
+        
+        for collectible in self.collectible_list:
+            collectible.rect.x += shift
 
         return shift
 
@@ -126,15 +153,19 @@ class Level_00(Level):
         # Call the parent constructor
         Level.__init__(self, player)
 
-        self.musicfile = 'Great Fairys Fountain - The Legend of Zelda - Twilight Princess-7SpBIV_HYbk.ogg'
-        self.background = pygame.image.load("background_00.png").convert()
-        self.background.set_colorkey(constants.WHITE)
-        self.level_limit = -10
+        self.musicfile = 'I Can Go The Distance - Hercules Lyrics-2aqpF-MwyUs.ogg'
+        self.background = pygame.image.load("background_00a.png").convert()
+        self.background.set_colorkey(constants.BLUE)
+
+        self.background2 = pygame.image.load("background_00b.png").convert()
+        self.background2.set_colorkey(constants.BLUE)
+
+        self.level_limit = -3000
 
 
-        # SchiffImg = pygame.image.load('Schiff1.png')
-        # if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
-        #    SchiffImg = pygame.image.load('Schiff2.png')
+        #SchiffImg = pygame.image.load('Schiff1.png')
+        #if loopRound % (2*AnzahlFrames) > (AnzahlFrames - 1):
+         #   SchiffImg = pygame.image.load('Schiff2.png')
 
 
 
@@ -148,14 +179,14 @@ class Level_01(Level):
 
         # Call the parent constructor
         Level.__init__(self, player)
-        self.musicfile = "Mein Kleiner Gruner Kaktus - Comedian Harmonists-HyqzJTNcygE.ogg"
+        self.musicfile = "Billie Eilish - Bad Guy (Cover by UMC)_-EjMtDFRl-Ws.ogg"
         self.background = pygame.image.load("background_01.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -2500
 
 
         # Array with type of platform, and x, y location of the platform.
-        level = [ [platforms.GRASS_LEFT, 500, 500],
+        level_platforms = [ [platforms.GRASS_LEFT, 500, 500],
                   [platforms.GRASS_MIDDLE, 570, 500],
                   [platforms.GRASS_RIGHT, 640, 500],
                   [platforms.GRASS_LEFT, 800, 400],
@@ -169,25 +200,54 @@ class Level_01(Level):
                   [platforms.STONE_PLATFORM_RIGHT, 1260, 280],
                   ]
 
+        # manual placements for collectibles
+        level_collectibles = [ [collectibles.SUSHI, 300, 300],
+                               [collectibles.SUSHI, 400, 300],
+                               [collectibles.SUSHI, 500, 300],
+                               [collectibles.SUSHI, 600, 300],
+                               [collectibles.SUSHI, 700, 300],
+                               ]
+
+        # random mass placement for collectibles
+        for i in range(10):
+            level_collectibles.append([collectibles.SUSHI, random.randint(200, -self.level_limit), random.randint(0, 400)])
 
         # Go through the array above and add platforms
-        for platform in level:
+        for platform in level_platforms:
             block = platforms.Platform(platform[0])
             block.rect.x = platform[1]
             block.rect.y = platform[2]
             block.player = self.player
             self.platform_list.add(block)
 
+        for collectible in level_collectibles:
+            block = collectibles.Collectible(collectible[0])
+            block.rect.x = collectible[1]
+            block.rect.y = collectible[2]
+            block.player = self.player
+            self.collectible_list.add(block)
+
         # Add a custom moving platform
         block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
-        block.rect.x = 1350
+        block.rect.x = 1400
         block.rect.y = 280
-        block.boundary_left = 1350
+        block.boundary_left = 1400
         block.boundary_right = 1600
-        block.change_x = 1
+        block.change_x = -1
         block.player = self.player
         block.level = self
         self.platform_list.add(block)
+
+        # Add a custom moving collectible
+        #block = collectibles.MovingCollectible(collectibles.SUSHI)
+        #block.rect.x = 500
+        #block.rect.y = 300
+        #block.boundary_top = 220
+        #block.boundary_bottom = 200
+        #block.change_y = 1
+        #block.player = self.player
+        #block.level = self
+        #self.collectible_list.add(block)
 
 
 # Create platforms for the level
