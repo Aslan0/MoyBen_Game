@@ -28,12 +28,19 @@ import pygame
 
 import constants
 import levels
-
+import events
+import speechbubbles
 from player import Player
+
+
+
+
 
 def main():
     """ Main Program """
+
     pygame.init()
+
 
     # Set the height and width of the screen
     size = [constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT]
@@ -52,7 +59,7 @@ def main():
     level_list.append(levels.Level_03(player))
 
     # Set the current level
-    current_level_no = 3 # revert, testing only
+    current_level_no = 3 #  revert, testing only
     current_level = level_list[current_level_no]
     current_level.play_background_music()
 
@@ -69,9 +76,20 @@ def main():
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
+    speechbubbles.preload_font()
+
+    meowsounds = [pygame.mixer.Sound("meow00.ogg"), pygame.mixer.Sound("meow01.ogg")]
+
+    pygame.mixer.set_reserved(1)
+    meow_channel = pygame.mixer.Channel(0)  # reserved
+    meow_channel.set_endevent(events.EVENT_SOUNDEND_MEOW)
+    sound = meowsounds[meowcounter]
+
     # -------- Main Program Loop -----------
     while not done:
         for event in pygame.event.get(): # User did something
+
+
             if event.type == pygame.QUIT: # If user clicked close
                 done = True # Flag that we are done so we exit this loop
 
@@ -87,16 +105,21 @@ def main():
                 if event.key == pygame.K_SPACE:
                     #  MEOW
                     meowcounter += 1
-                    meowcounter = meowcounter % 2
-                    MeowSound = pygame.mixer.Sound('meow0'+str(meowcounter)+'.ogg')
-                    MeowSound.play()
-
+                    meowcounter = meowcounter % len(meowsounds)
+                    if pygame.mixer.get_init():
+                        sound = meowsounds[meowcounter]
+                        meow_channel.play(sound)
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT and player.change_x < 0:
+                if event.key == pygame.K_LEFT:
                     player.stop()
-                if event.key == pygame.K_RIGHT and player.change_x > 0:
+                if event.key == pygame.K_RIGHT:
                     player.stop()
+
+
+            events.global_eventmanager.notify(event)
+
+
 
         # Update the player.
         active_sprite_list.update()
@@ -111,7 +134,7 @@ def main():
             current_level.shift_world_x(-diff)
 
         # If the player gets near the left side, shift the world right (+x)
-        if player.rect.x <= 120:
+        if player.rect.x <= 120 and player.rect.x - current_level.world_shift > 120:
             diff = 120 - player.rect.x
             player.rect.x = 120
             current_level.shift_world_x(diff)
@@ -122,8 +145,9 @@ def main():
             player.rect.y = 500
             current_level.shift_world_y(-diff)
 
-        if player.rect.y <= 120:
-            diff = 120 - player.rect.x
+        # Move camera up
+        if player.rect.y <= 120 and player.rect.y - current_level.world_shift_y > 120:
+            diff = 120 - player.rect.y
             player.rect.y = 120
             current_level.shift_world_y(diff)
 

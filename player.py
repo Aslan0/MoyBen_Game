@@ -9,6 +9,10 @@ import constants
 from platforms import MovingPlatform
 from spritesheet_functions import SpriteSheet
 
+ACCELERATION_X_AIR = 2
+ACCELERATION_X_GROUND = 15
+WALK_SPEED_MAX_DEFAULT = 15
+
 class Player(pygame.sprite.Sprite):
     """ This class represents the bar at the bottom that the player
     controls. """
@@ -25,9 +29,17 @@ class Player(pygame.sprite.Sprite):
 
     # What direction is the player facing?
     direction = "R"
+    horizontal_movement_factor = 1
+    direction_factor = 0
+    walk_speed_max = WALK_SPEED_MAX_DEFAULT
+    acceleration_x = 0
 
     # List of sprites we can bump against
     level = None
+    jump_factor = 3.6
+
+    is_screaming = False
+    screaming_end_timestamp = 0
 
     # -- Methods
     def __init__(self):
@@ -90,11 +102,37 @@ class Player(pygame.sprite.Sprite):
         # Gravity
         self.calc_grav()
 
+
+        if self.has_footing():
+            self.acceleration_x = ACCELERATION_X_GROUND
+            if self.direction_factor == 0:
+                self.change_x *= 0.3
+                if abs(self.change_x) <= 0.1:
+                    self.change_x = 0
+        else:
+            self.acceleration_x = ACCELERATION_X_AIR
+
+        self.change_x = self.change_x + self.acceleration_x * self.direction_factor
+        self.change_x = min(self.change_x, self.walk_speed_max)
+        self.change_x = max(self.change_x, -self.walk_speed_max)
+
+
+
+
+        # Dont walk out of the left side of the level
+        if self.change_x < 0 and not self.rect.x - self.level.world_shift > self.rect.width / 2:
+            self.change_x = 0
+
+        # Dont walk out of the right side of the level
+        if self.change_x > 0 and not self.rect.x - self.level.world_shift > self.level.level_limit:
+            self.change_x = 0
+
+
         # p rint("player" + str(self.rect))
         # Move left/right
-        self.rect.x += self.change_x
+        self.rect.x += self.change_x * self.horizontal_movement_factor
 
-        print(self.level.world_shift)
+        # print(self.level.world_shift)
         # dont allow the player to walk left
         if self.level.world_shift > 0:
             self.level.world_shift = -10
@@ -150,14 +188,24 @@ class Player(pygame.sprite.Sprite):
             MeowSound = pygame.mixer.Sound('nom.ogg')
             MeowSound.play()
 
+        self.is_screaming = pygame.time.get_ticks() <= self.screaming_end_timestamp
 
+        screaming_height_min = self.level.level_limit_y * 0.5
+        if not self.is_screaming and self.change_y > 47 and (self.rect.y - self.level.world_shift_y < self.level.level_limit_y + self.rect.height - screaming_height_min):
+            self.scream()
+
+    def scream(self):
+        sound = pygame.mixer.Sound('scream00.ogg')
+        sound.play()
+        self.screaming_end_timestamp = pygame.time.get_ticks() + 1000 * sound.get_length()
+        self.is_screaming = True
 
     def calc_grav(self):
         """ Calculate effect of gravity. """
         if self.change_y == 0:
-            self.change_y = 1
+            self.change_y = 1 * self.level.gravity_factor
         else:
-            self.change_y += .35
+            self.change_y += .35 * self.level.gravity_factor
 
 
         # See if we are on the ground.
@@ -165,8 +213,7 @@ class Player(pygame.sprite.Sprite):
             self.change_y = 0
             self.rect.y = self.level.level_limit_y + self.rect.height + self.level.world_shift_y
 
-    def jump(self):
-        """ Called when user hits 'jump' button. """
+    def has_footing(self):
 
         # move down a bit and see if there is a platform below us.
         # Move down 2 pixels because it doesn't work well if we only move down 1
@@ -177,19 +224,30 @@ class Player(pygame.sprite.Sprite):
 
         # If it is ok to jump, set our speed upwards
         if len(platform_hit_list) > 0 or self.rect.y - self.level.world_shift_y >= self.level.level_limit_y + self.rect.height:
-            self.change_y = -10
+            return True
+        return False
+
+    def jump(self):
+
+        """ Called when user hits 'jump' button. """
+        if self.has_footing():
+            self.change_y = -10 * self.jump_factor
 
     # Player-controlled movement:
     def go_left(self):
         """ Called when the user hits the left arrow. """
-        self.change_x = -30
+
         self.direction = "L"
+        self.direction_factor = -1
 
     def go_right(self):
         """ Called when the user hits the right arrow. """
-        self.change_x = 30
+
         self.direction = "R"
+        self.direction_factor = 1
+
 
     def stop(self):
         """ Called when the user lets off the keyboard. """
-        self.change_x = 0
+        self.direction_factor = 0
+        self.acceleration_x = 0

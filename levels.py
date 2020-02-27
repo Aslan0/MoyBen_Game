@@ -38,6 +38,8 @@ class Level():
     level_limit = -1000
 
     level_limit_y = 420
+    gravity_factor = 1
+    background_final = None
 
     def __init__(self, player):
         """ Constructor. Pass in a handle to player. Needed for when moving platforms
@@ -79,7 +81,9 @@ class Level():
         # in case you want to switch resolutions to anything that isnt 800x600 - this is the first of many codechanges necessary
         #if not constants.Devmode:
         #    self.background_final = pygame.transform.scale(self.background_final, (constants.SCREEN_WIDTH_new, constants.SCREEN_HEIGHT_new))
-        screen.blit(self.background_final, (self.world_shift // 3, self.world_shift_y))
+
+        if self.background_final:
+            screen.blit(self.background_final, (self.world_shift // 3, self.world_shift_y))
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
@@ -118,10 +122,18 @@ class Level():
 
     def shift_world_y(self, shift_y):
 
+        shift = shift_y
 
-        shift_highest_allowed = self.level_limit_y - self.world_shift_y
+        # if camera is moving down
+        if (shift_y < 0):
+            shift_highest_allowed_down = self.world_shift_y # dont go below floor with camera!
+            shift = max(shift_highest_allowed_down, shift_y)
+        elif shift_y > 0:
+            shift_highest_allowed_up = self.level_limit_y - self.world_shift_y#  dont go above ceiling
+            shift = min(shift_highest_allowed_up, shift_y)
 
-        shift = min(shift_highest_allowed, shift_y)
+
+
         # Keep track of the shift amount
         self.world_shift_y += shift
 
@@ -309,11 +321,13 @@ class Level_03(Level):
         # Call the parent constructor
         Level.__init__(self, player)
 
+        self.gravity_factor = 10
+
         self.background = pygame.image.load("background_03.png").convert()
-        self.background.set_colorkey(constants.WHITE)
-        self.level_limit = -12000 # 10k - 12k
-        self.level_limit_y = 2100
-        self.world_shift_y = -1500
+        # self.background.set_colorkey(constants.WHITE)
+        self.level_limit = -9000
+        self.level_limit_y = 1690
+        self.world_shift_y = -1200
 
         # Array with type of platform, and x, y location of the platform.
         level = [ [platforms.STONE_PLATFORM_LEFT_SMALL, 0, self.level_limit_y + self.world_shift_y + 50],
@@ -322,6 +336,11 @@ class Level_03(Level):
         add_platforms_to_list_repeated_horizontally(level, platforms.STONE_PLATFORM_MIDDLE_SMALL, -1000,
                                                     self.level_limit_y + self.world_shift_y + 50,
                                                     200)
+
+        stair_platform = platforms.STONE_PLATFORM_MIDDLE
+        add_platforms_to_list_repeated_horizontally(level, stair_platform, 5000,
+                                                    self.level_limit_y + self.world_shift_y - 50,
+                                                    10, -stair_platform[2] -140, -140)
 
         # Go through the array above and add platforms
         for platform in level:
@@ -333,8 +352,8 @@ class Level_03(Level):
 
 
         # Add a lissi
-        lissi = characters.TaklingCharacter(characters.LISSI, ["das ist\n doch \nalbern", "Good Luck!\nHave Fun! :)"])
-        lissi.rect.x = 300
+        lissi = characters.TaklingCharacter(characters.LISSI, ["das ist\n doch \nalbern"], [])
+        lissi.rect.x = 500
         lissi.rect.y = self.level_limit_y + self.world_shift_y + 55 - lissi.rect.height
         # block.boundary_top = 100
         # block.boundary_bottom = 550
@@ -342,6 +361,18 @@ class Level_03(Level):
         lissi.player = self.player
         lissi.level = self
         self.character_list.add(lissi)
+
+
+        # Add a li-ming
+        li_ming = characters.TaklingCharacter(characters.LI_MING, [" Aaaargh! ", "DAS \nwillst Du\n machen?", "Why? \nEcht jetzt?!", "Na gut \nich mach mit."], [])
+        li_ming.rect.x = 1000
+        li_ming.rect.y = self.level_limit_y + self.world_shift_y + 55 - li_ming.rect.height
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        li_ming.player = self.player
+        li_ming.level = self
+        self.character_list.add(li_ming)
 
         # Add a custom moving platform
         # block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
