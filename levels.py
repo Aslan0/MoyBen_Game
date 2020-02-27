@@ -38,7 +38,7 @@ class Level():
     level_limit = -1000
 
     level_limit_y = 420
-    gravity_factor = 1
+    gravity_factor = 10
     background_final = None
 
     def __init__(self, player):

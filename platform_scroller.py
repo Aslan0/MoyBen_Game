@@ -59,7 +59,7 @@ def main():
     level_list.append(levels.Level_03(player))
 
     # Set the current level
-    current_level_no = 3 #  revert, testing only
+    current_level_no = 0
     current_level = level_list[current_level_no]
     current_level.play_background_music()
 
