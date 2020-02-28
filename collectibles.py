@@ -14,7 +14,7 @@ import constants
 #   Height of sprite
 
 SUSHI            = (360, 0, 70, 70)
-
+FISTBUMP         = (430, 800,  717-430, 933-800)
 
 class Collectible(pygame.sprite.Sprite):
     """ Collectible the user can collect on """
@@ -33,6 +33,7 @@ class Collectible(pygame.sprite.Sprite):
                                             sprite_sheet_data[3])
 
         self.rect = self.image.get_rect()
+        self.sound = 'nom.ogg'
 
 
 class MovingCollectible(Collectible):

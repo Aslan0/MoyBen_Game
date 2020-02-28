@@ -23,6 +23,8 @@ STONE_PLATFORM_LEFT_SMALL   = (432, 745, 70, 15)
 STONE_PLATFORM_MIDDLE_SMALL = (648, 673, 70, 15)
 STONE_PLATFORM_RIGHT_SMALL  = (792, 673, 70, 15)
 
+BOULDER = (720, 720,  912-720, 933-720 )
+
 class Platform(pygame.sprite.Sprite):
     """ Platform the user can jump on """
 

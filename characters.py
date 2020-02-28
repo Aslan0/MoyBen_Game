@@ -94,8 +94,6 @@ class TaklingCharacter(Character, events.EventListener):
 
         self.rect = self.image.get_rect()
 
-
-
         self.left_range_since_last_speechbubble_ended = True
         self.is_talking = False
         self.sounds = []

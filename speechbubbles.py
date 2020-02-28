@@ -55,10 +55,10 @@ class SpeechBubble(pygame.sprite.Sprite):
             for line in lines:
                 max_char = max(max_char, len(line))
             font_size = self.image.get_rect().width * 2.5 / max_char
-            font_size = round(min(font_size, self.image.get_rect().height * 1.2 / (len(lines) + 1)))
-            font_size = min(font_size, 60)
+            font_size = round(min(font_size, self.image.get_rect().height * 1.0 / (len(lines) + 1)))
+            font_size = min(font_size, 60) # maximum size is 60
 
-            font_color = pygame.color.Color(0, 0, 0, 255)
+            font_color = pygame.color.Color(20, 20, 20, 255)
 
 
             self.image = self.speechbubble_image.copy()

@@ -330,6 +330,7 @@ class Level_03(Level):
         self.level_limit = -9000
         self.level_limit_y = 1690
         self.world_shift_y = -1200
+        self.musicfile = "Jaws Theme Song-A9QTSyLwd4w.ogg"
 
         # Array with type of platform, and x, y location of the platform.
         level = [ [platforms.STONE_PLATFORM_LEFT_SMALL, 0, self.level_limit_y + self.world_shift_y + 50],
@@ -344,6 +345,14 @@ class Level_03(Level):
                                                     self.level_limit_y + self.world_shift_y - 50,
                                                     10, -stair_platform[2] -140, -140)
 
+        level2 = [[platforms.STONE_PLATFORM_MIDDLE, x, self.level_limit_y + self.world_shift_y + -1350] for x in range(0, 3640, 50)]
+
+
+        for lvl in level2:
+            level.append(lvl)
+
+        #level.append([platforms.BOULDER, 50, self.level_limit_y + self.world_shift_y + -1550])
+
         # Go through the array above and add platforms
         for platform in level:
             block = platforms.Platform(platform[0])
@@ -351,6 +360,7 @@ class Level_03(Level):
             block.rect.y = platform[2]
             block.player = self.player
             self.platform_list.add(block)
+            #print platform[1], platform[2]
 
 
         # Add a lissi
@@ -366,7 +376,7 @@ class Level_03(Level):
 
 
         # Add a li-ming
-        li_ming = characters.TaklingCharacter(characters.LI_MING, [" Aaaargh! ", "DAS \nwillst Du\n machen?", "Why? \nEcht jetzt?!", "Na gut \nich mach mit."], [])
+        li_ming = characters.TaklingCharacter(characters.LI_MING, [" Aaaargh! ", "DAS \nwillst Du\n machen?", "Why? \nEcht jetzt?!", "Na gut \nich mach mit."], optional_soundfiles=["li_blergh.ogg"])
         li_ming.rect.x = 1000
         li_ming.rect.y = self.level_limit_y + self.world_shift_y + 55 - li_ming.rect.height
         # block.boundary_top = 100
@@ -376,13 +386,15 @@ class Level_03(Level):
         li_ming.level = self
         self.character_list.add(li_ming)
 
-        # Add a custom moving platform
-        # block = platforms.MovingPlatform(platforms.STONE_PLATFORM_MIDDLE)
-        # block.rect.x = 1500
-        # block.rect.y = 300
-        # block.boundary_top = 100
-        # block.boundary_bottom = 550
-        # block.change_y = -1
-        # block.player = self.player
-        # block.level = self
-        # self.platform_list.add(block)
+        level_collectibles = [[collectibles.FISTBUMP, 50, self.level_limit_y + self.world_shift_y + -1550],
+                              [collectibles.SUSHI, 50, self.level_limit_y + self.world_shift_y + -1650]]
+
+        for collectible in level_collectibles:
+            block = collectibles.Collectible(collectible[0])
+            if collectible[0] == collectibles.FISTBUMP:
+                block.sound = 'woop_woop.ogg'
+            block.rect.x = collectible[1]
+            block.rect.y = collectible[2]
+            block.player = self.player
+            self.collectible_list.add(block)
+

@@ -185,8 +185,9 @@ class Player(pygame.sprite.Sprite):
         for collect in collectible_hit_list:
             # let the collectible disappear
             collect.rect.top = 5000
-            MeowSound = pygame.mixer.Sound('nom.ogg')
-            MeowSound.play()
+
+            CollectibleSound = pygame.mixer.Sound(collect.sound)    #EMRG
+            CollectibleSound.play()
 
         self.is_screaming = pygame.time.get_ticks() <= self.screaming_end_timestamp
 
