@@ -38,7 +38,7 @@ class Level():
     level_limit = -1000
 
     level_limit_y = 420
-    gravity_factor = 1
+    gravity_factor = 3
     background_final = None
 
     def __init__(self, player):
@@ -95,6 +95,7 @@ class Level():
     def play_background_music(self):
         if (self.musicfile):
             pygame.mixer.music.stop()
+            # print("musicfile:" + self.musicfile)
             pygame.mixer.music.load(self.musicfile)
             pygame.mixer.music.play(-1, 0)
 
@@ -172,6 +173,7 @@ class Level_00(Level):
         self.background2 = pygame.image.load("background_00b.png").convert()
         self.background2.set_colorkey(constants.BLUE)
 
+        # self.gravity_factor = 2
         self.level_limit = -3000
 
 
@@ -274,7 +276,7 @@ class Level_02(Level):
 
         self.background = pygame.image.load("background_02.png").convert()
         self.background.set_colorkey(constants.WHITE)
-        self.level_limit = -5000
+        self.level_limit = -4000
 
         # Array with type of platform, and x, y location of the platform.
         level = [ [platforms.STONE_PLATFORM_LEFT, 500, 550],
@@ -321,7 +323,7 @@ class Level_03(Level):
         # Call the parent constructor
         Level.__init__(self, player)
 
-        self.gravity_factor = 10
+        # self.gravity_factor = 1
 
         self.background = pygame.image.load("background_03.png").convert()
         # self.background.set_colorkey(constants.WHITE)

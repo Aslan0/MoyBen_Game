@@ -59,7 +59,7 @@ def main():
     level_list.append(levels.Level_03(player))
 
     # Set the current level
-    current_level_no = 3 #  revert, testing only
+    current_level_no = 3
     current_level = level_list[current_level_no]
     current_level.play_background_music()
 
@@ -83,7 +83,6 @@ def main():
     pygame.mixer.set_reserved(1)
     meow_channel = pygame.mixer.Channel(0)  # reserved
     meow_channel.set_endevent(events.EVENT_SOUNDEND_MEOW)
-    sound = meowsounds[meowcounter]
 
     # -------- Main Program Loop -----------
     while not done:
@@ -100,8 +99,8 @@ def main():
                     player.go_right()
                 if event.key == pygame.K_UP:
                     player.jump()
-                if event.key == pygame.K_UP:
-                    player.jump()
+                if event.key == pygame.K_ESCAPE:
+                    done = True  # Flag that we are done so we exit this loop
                 if event.key == pygame.K_SPACE:
                     #  MEOW
                     meowcounter += 1
@@ -169,7 +168,7 @@ def main():
         # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
 
         # Limit to 60 frames per second
-        clock.tick(60)
+        clock.tick(30)
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()

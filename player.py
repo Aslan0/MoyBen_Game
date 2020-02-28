@@ -36,7 +36,7 @@ class Player(pygame.sprite.Sprite):
 
     # List of sprites we can bump against
     level = None
-    jump_factor = 3.6
+    jump_factor = 1.9
 
     is_screaming = False
     screaming_end_timestamp = 0
