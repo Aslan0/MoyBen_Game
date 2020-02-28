@@ -351,7 +351,7 @@ class Level_03(Level):
         for lvl in level2:
             level.append(lvl)
 
-        #level.append([platforms.BOULDER, 50, self.level_limit_y + self.world_shift_y + -1550])
+        level.append([platforms.BOULDER, 50, self.level_limit_y + self.world_shift_y + -1550])
 
         # Go through the array above and add platforms
         for platform in level:
@@ -360,7 +360,6 @@ class Level_03(Level):
             block.rect.y = platform[2]
             block.player = self.player
             self.platform_list.add(block)
-            #print platform[1], platform[2]
 
 
         # Add a lissi

@@ -2,21 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84e0bfe6-cd71-439c-aba9-c1e47634a1ca" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Jaws Theme Song-A9QTSyLwd4w.ogg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fistbump.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/li_blergh.ogg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/woop_woop.ogg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/background_00a.png" afterPath="$PROJECT_DIR$/background_00a.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/background_03.png" afterPath="$PROJECT_DIR$/background_03.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tiles_spritesheet.png" afterPath="$PROJECT_DIR$/tiles_spritesheet.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/characters.py" afterPath="$PROJECT_DIR$/characters.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/collectibles.py" afterPath="$PROJECT_DIR$/collectibles.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/levels.py" afterPath="$PROJECT_DIR$/levels.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/platform_scroller.py" afterPath="$PROJECT_DIR$/platform_scroller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/platforms.py" afterPath="$PROJECT_DIR$/platforms.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/player.py" afterPath="$PROJECT_DIR$/player.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/speechbubbles.py" afterPath="$PROJECT_DIR$/speechbubbles.py" />
     </list>
     <ignored path="MoyBen_Game.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,8 +39,8 @@
       <file leaf-file-name="levels.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/levels.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="375" column="0" selection-start-line="375" selection-start-column="0" selection-end-line="375" selection-end-column="0" />
+            <state relative-caret-position="257">
+              <caret line="369" column="37" selection-start-line="369" selection-start-column="37" selection-end-line="369" selection-end-column="37" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -408,7 +395,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582911553876</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="added boulder&#10;&#10;added fistbump + woop woop&#10;&#10;added new">
+      <created>1582932234912</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1582932234912</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -470,7 +464,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixed bugs between systems" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed bugs between systems" />
+    <MESSAGE value="added boulder&#10;&#10;added fistbump + woop woop&#10;&#10;added new" />
+    <option name="LAST_COMMIT_MESSAGE" value="added boulder&#10;&#10;added fistbump + woop woop&#10;&#10;added new" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -857,8 +852,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/levels.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="375" column="0" selection-start-line="375" selection-start-column="0" selection-end-line="375" selection-end-column="0" />
+        <state relative-caret-position="257">
+          <caret line="369" column="37" selection-start-line="369" selection-start-column="37" selection-end-line="369" selection-end-column="37" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
