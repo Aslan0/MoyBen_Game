@@ -153,7 +153,7 @@ class Level():
             speechbubble.rect.y += shift
         
         for collectible in self.collectible_list:
-            collectible.rect.x += shift
+            collectible.rect.y += shift
 
         return shift
 
@@ -277,6 +277,7 @@ class Level_02(Level):
         self.background = pygame.image.load("background_02.png").convert()
         self.background.set_colorkey(constants.WHITE)
         self.level_limit = -4000
+        self.musicfile = "Space Cats - Magic Fly-J7UwSVsiwzI.ogg"
 
         # Array with type of platform, and x, y location of the platform.
         level = [ [platforms.STONE_PLATFORM_LEFT, 500, 550],
@@ -385,8 +386,95 @@ class Level_03(Level):
         li_ming.level = self
         self.character_list.add(li_ming)
 
-        level_collectibles = [[collectibles.FISTBUMP, 50, self.level_limit_y + self.world_shift_y + -1550],
-                              [collectibles.SUSHI, 50, self.level_limit_y + self.world_shift_y + -1650]]
+        level_collectibles = [[collectibles.FISTBUMP, 200, self.level_limit_y + self.world_shift_y + -1500],
+                              ]
+
+        for collectible in level_collectibles:
+            block = collectibles.Collectible(collectible[0])
+            if collectible[0] == collectibles.FISTBUMP:
+                block.sound = 'woop_woop.ogg'
+            block.rect.x = collectible[1]
+            block.rect.y = collectible[2]
+            block.player = self.player
+            self.collectible_list.add(block)
+
+
+
+class Level_05(Level):
+    """ Definition for level 3, aka the excel level"""
+
+    def __init__(self, player):
+        """ Create level 3. """
+
+        # Call the parent constructor
+        Level.__init__(self, player)
+
+        # self.gravity_factor = 1
+
+        self.background = pygame.image.load("background_05.png").convert()
+        # self.background.set_colorkey(constants.WHITE)
+        self.level_limit = -6500
+        self.level_limit_y = 1000
+        self.world_shift_y = -700
+        self.musicfile = "Relax 3 Minutes - Tropical Beach Relaxing Sounds of Waves-wasGNXNdVgo.ogg"
+
+        # Array with type of platform, and x, y location of the platform.
+        #level = [ [platforms.STONE_PLATFORM_LEFT_SMALL, 6500, self.level_limit_y + self.world_shift_y + 50], ]
+
+        distance = 300
+        level = [[platforms.STONE_PLATFORM_MIDDLE, 6700, self.level_limit_y + self.world_shift_y + y] for y in range(int(0.5*distance), -1000, -distance)]
+        level2 = [[platforms.STONE_PLATFORM_MIDDLE, 6400, self.level_limit_y + self.world_shift_y + y] for y in range(0, -1000, -distance)]
+
+
+        for lvl in level2:
+            level.append(lvl)
+
+
+        # Go through the array above and add platforms
+        for platform in level:
+            block = platforms.Platform(platform[0])
+            block.rect.x = platform[1]
+            block.rect.y = platform[2]
+            block.player = self.player
+            self.platform_list.add(block)
+
+
+        # Add a alex
+        alex = characters.TaklingCharacter(characters.ALEX, ["hihihi"], optional_soundfiles=["alex_hihihi.ogg"])
+        alex.rect.x = 1000
+        alex.rect.y = self.level_limit_y + self.world_shift_y + 200 - alex.rect.height
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        alex.player = self.player
+        alex.level = self
+        self.character_list.add(alex)
+
+        # Add a boep
+        boep = characters.TaklingCharacter(characters.BOEP, [], optional_soundfiles=["boep1.ogg", "boep2.ogg", "boep3.ogg", ])
+        boep.rect.x = 2000
+        boep.rect.y = self.level_limit_y + self.world_shift_y + 200 - boep.rect.height
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        boep.player = self.player
+        boep.level = self
+        self.character_list.add(boep)
+
+        # Add a bene
+        bene = characters.TaklingCharacter(characters.BENE, ["Du hast mich \ngefunden!"], optional_soundfiles=["Applause Crowd Cheering sound effect-barWV7RWkq0.ogg"])
+        bene.rect.x = 6550
+        bene.rect.y = self.level_limit_y + self.world_shift_y + -700 - bene.rect.height
+        # block.boundary_top = 100
+        # block.boundary_bottom = 550
+        # block.change_y = -1
+        bene.player = self.player
+        bene.level = self
+        self.character_list.add(bene)
+
+
+        level_collectibles = [[collectibles.FISTBUMP, 200, self.level_limit_y + self.world_shift_y + -1500],
+                              ]
 
         for collectible in level_collectibles:
             block = collectibles.Collectible(collectible[0])

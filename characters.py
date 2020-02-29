@@ -19,6 +19,10 @@ from spritesheet_functions import SpriteSheet
 LISSI = (0, 0, 44, 88)
 LI_MING = (0, 95, 54, 100)
 
+ALEX = (0, 200, 109, 319)
+BOEP = (0, 520, 220, 290)
+BENE = (0, 810, 296, 222)
+
 class Character(pygame.sprite.Sprite):
     """ Platform the user can jump on """
     level = None

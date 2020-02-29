@@ -58,8 +58,10 @@ def main():
     level_list.append(levels.Level_02(player))
     level_list.append(levels.Level_03(player))
 
+    level_list.append(levels.Level_05(player))
+
     # Set the current level
-    current_level_no = 3
+    current_level_no = 0
     current_level = level_list[current_level_no]
     current_level.play_background_music()
 
@@ -67,7 +69,7 @@ def main():
     player.level = current_level
 
     player.rect.x = 640
-    player.rect.y = constants.SCREEN_HEIGHT - player.rect.height + -2000
+    player.rect.y = constants.SCREEN_HEIGHT - player.rect.height #+ -2000
     active_sprite_list.add(player)
 
     #Loop until the user clicks the close button.
